@@ -1,0 +1,238 @@
+- generic [ref=f8e2]:
+  - navigation [ref=f8e3]:
+    - generic [ref=f8e4]:
+      - link "AP." [ref=f8e5] [cursor=pointer]:
+        - /url: "#hero"
+      - generic [ref=f8e6]:
+        - link "Home" [ref=f8e7]:
+          - /url: "#hero"
+        - link "About" [ref=f8e8]:
+          - /url: "#about"
+        - link "Skills" [ref=f8e9]:
+          - /url: "#skills"
+        - link "Experience" [ref=f8e10]:
+          - /url: "#experience"
+        - link "Projects" [ref=f8e11]:
+          - /url: "#projects"
+        - link "Contact" [ref=f8e12]:
+          - /url: "#contact"
+  - main [ref=f8e13]:
+    - generic [ref=f8e14]:
+      - generic [ref=f8e19]:
+        - generic [ref=f8e20]:
+          - paragraph [ref=f8e21]: Full-Stack Developer
+          - heading "Arpit Rasikbhai Patel" [level=1] [ref=f8e22]: Arpit RasikbhaiPatel
+          - paragraph [ref=f8e23]: Innovative IT student specializing in backend architecture, API integration, and full-stack development.
+          - paragraph [ref=f8e24]: 📍 Ahmedabad, Gujarat, India
+          - generic [ref=f8e25]:
+            - link "View Projects" [ref=f8e26]:
+              - /url: "#projects"
+            - link "Get in Touch" [ref=f8e29]:
+              - /url: "#contact"
+            - link "Resume" [ref=f8e30]:
+              - /url: /assets/resume.pdf
+        - img "Arpit Rasikbhai Patel" [ref=f8e37]
+      - generic [ref=f8e38]: SCROLL
+    - generic [ref=f8e45]:
+      - generic [ref=f8e46]:
+        - paragraph [ref=f8e47]: Who I Am
+        - heading "About Me" [level=2] [ref=f8e48]
+      - generic [ref=f8e52]:
+        - paragraph [ref=f8e53]: Innovative IT student specializing in backend architecture, API integration, and full-stack development. Experienced in building robust web platforms and data extraction pipelines using Python, Django, and React. Eager to engineer secure, scalable software systems that solve real-world problems.
+        - paragraph [ref=f8e54]: With hands-on experience in developing ERP systems, predictive analytics platforms, and job aggregation tools, I bring a deep understanding of backend optimization, database design, and API architecture to every project I take on.
+        - generic [ref=f8e55]:
+          - generic [ref=f8e56]: Python Dev Intern @ Tesseract Technolabs
+          - generic [ref=f8e58]: 🎓 Sem 6 — LJ University, Ahmedabad
+          - generic [ref=f8e59]: 🎯 Expected Graduation 2027
+    - generic [ref=f8e62]:
+      - generic [ref=f8e63]:
+        - paragraph [ref=f8e64]: What I Work With
+        - heading "Skills" [level=2] [ref=f8e65]
+      - generic [ref=f8e67]:
+        - generic [ref=f8e68]:
+          - heading "Web Development" [level=3] [ref=f8e69]
+          - generic [ref=f8e70]:
+            - generic [ref=f8e71]: HTML
+            - generic [ref=f8e72]: CSS
+            - generic [ref=f8e73]: JavaScript
+            - generic [ref=f8e74]: MySQL
+            - generic [ref=f8e75]: React
+            - generic [ref=f8e76]: Express
+            - generic [ref=f8e77]: Node.js
+            - generic [ref=f8e78]: Next.js
+            - generic [ref=f8e79]: MongoDB
+        - generic [ref=f8e80]:
+          - heading "Programming Languages" [level=3] [ref=f8e81]
+          - generic [ref=f8e82]:
+            - generic [ref=f8e83]: Java
+            - generic [ref=f8e84]: Python
+            - generic [ref=f8e85]: PHP
+            - generic [ref=f8e86]: C#
+            - generic [ref=f8e87]: JavaScript
+        - generic [ref=f8e88]:
+          - heading "Frameworks" [level=3] [ref=f8e89]
+          - generic [ref=f8e90]:
+            - generic [ref=f8e91]: Bootstrap
+            - generic [ref=f8e92]: Tailwind CSS
+            - generic [ref=f8e93]: Django
+            - generic [ref=f8e94]: ASP.NET
+            - generic [ref=f8e95]: AngularJS
+        - generic [ref=f8e96]:
+          - heading "Machine Learning" [level=3] [ref=f8e97]
+          - generic [ref=f8e98]:
+            - generic [ref=f8e99]: Supervised Learning
+            - generic [ref=f8e100]: Unsupervised Learning
+            - generic [ref=f8e101]: NumPy
+            - generic [ref=f8e102]: Pandas
+            - generic [ref=f8e103]: Matplotlib
+            - generic [ref=f8e104]: Scikit-learn
+        - generic [ref=f8e105]:
+          - heading "Soft Skills" [level=3] [ref=f8e106]
+          - generic [ref=f8e107]:
+            - generic [ref=f8e108]: Research
+            - generic [ref=f8e109]: Leadership
+            - generic [ref=f8e110]: Peer Interaction
+            - generic [ref=f8e111]: Team Management
+            - generic [ref=f8e112]: Time Management
+    - generic [ref=f8e115]:
+      - generic [ref=f8e116]:
+        - paragraph [ref=f8e117]: Where I've Worked
+        - heading "Experience" [level=2] [ref=f8e118]
+      - generic [ref=f8e124]:
+        - generic [ref=f8e125]:
+          - heading "Tesseract Technolabs" [level=3] [ref=f8e126]
+          - generic [ref=f8e127]: Ongoing
+        - paragraph [ref=f8e129]: Python Developer (Intern)
+        - paragraph [ref=f8e130]: June 2026 — Present
+        - paragraph [ref=f8e131]: "Project: Shashan ERP & Financial Management System"
+        - list [ref=f8e132]:
+          - listitem [ref=f8e133]: Architected a scalable, multi-module ERP system using Django 5.2, DRF, and Celery unifying inventory control, order fulfillment, and organizational management
+          - listitem [ref=f8e135]: Engineered a core financial module featuring a multi-owner digital wallet, automated escrow holds, and strict double-entry ledger accounting
+          - listitem [ref=f8e137]: Implemented database concurrency controls to prevent inventory race conditions, plus dynamic identity middleware for complex role-based access
+          - listitem [ref=f8e139]: "Optimized backend data flow: refactored core serializers to eliminate duplication, added advanced sorting/filtering for user data payloads, enhanced e-commerce order APIs with customer/business data integrations"
+    - generic [ref=f8e143]:
+      - generic [ref=f8e144]:
+        - paragraph [ref=f8e145]: What I've Built
+        - heading "Projects" [level=2] [ref=f8e146]
+      - generic [ref=f8e148]:
+        - generic [ref=f8e149]:
+          - heading "LuxeLounge" [level=3] [ref=f8e150]
+          - paragraph [ref=f8e151]: Predictive analytics and management platform for hospitality. Django REST APIs + custom data pipelines + scikit-learn models to forecast hotel occupancy and drive data-driven decisions.
+          - generic [ref=f8e152]:
+            - generic [ref=f8e153]: Django
+            - generic [ref=f8e154]: REST API
+            - generic [ref=f8e155]: scikit-learn
+            - generic [ref=f8e156]: Python
+            - generic [ref=f8e157]: Analytics
+        - generic [ref=f8e158]:
+          - heading "Job-Aggregator" [level=3] [ref=f8e159]
+          - paragraph [ref=f8e160]: Scalable job aggregation platform using Python, Selenium, Django, and React. Robust scraping pipelines extracting, normalizing, and serving data from LinkedIn and Indeed while navigating anti-bot measures.
+          - generic [ref=f8e161]:
+            - generic [ref=f8e162]: Python
+            - generic [ref=f8e163]: Selenium
+            - generic [ref=f8e164]: Django
+            - generic [ref=f8e165]: React
+            - generic [ref=f8e166]: Scraping
+        - generic [ref=f8e167]:
+          - heading "AI Solver" [level=3] [ref=f8e168]
+          - paragraph [ref=f8e169]: "Python-based automation script for rapid AI-driven problem solving: captures screen data, leverages AI models for analysis, pushes solutions via mobile notifications."
+          - generic [ref=f8e170]:
+            - generic [ref=f8e171]: Python
+            - generic [ref=f8e172]: AI
+            - generic [ref=f8e173]: Automation
+            - generic [ref=f8e174]: OCR
+        - generic [ref=f8e175]:
+          - heading "Global Pulse Gold Predictor" [level=3] [ref=f8e176]
+          - paragraph [ref=f8e177]: Predictive analytics engine synthesizing financial datasets with real-time global market signals; ML-driven gold trend forecasting.
+          - generic [ref=f8e178]:
+            - generic [ref=f8e179]: Machine Learning
+            - generic [ref=f8e180]: Finance
+            - generic [ref=f8e181]: Python
+            - generic [ref=f8e182]: Analytics
+        - generic [ref=f8e183]:
+          - heading "Algorithmic Visualization System" [level=3] [ref=f8e184]
+          - paragraph [ref=f8e185]: Interactive educational app visualizing step-by-step mechanics of algorithms (Dynamic Programming, Greedy strategies), bridging CS theory and intuitive UI.
+          - generic [ref=f8e186]:
+            - generic [ref=f8e187]: React
+            - generic [ref=f8e188]: Algorithms
+            - generic [ref=f8e189]: Visualization
+            - generic [ref=f8e190]: Education
+    - generic [ref=f8e193]:
+      - generic [ref=f8e194]:
+        - paragraph [ref=f8e195]: Academic Background
+        - heading "Education" [level=2] [ref=f8e196]
+      - generic [ref=f8e205]:
+        - heading "LJ University" [level=3] [ref=f8e206]
+        - paragraph [ref=f8e207]: Ahmedabad, Gujarat
+        - paragraph [ref=f8e208]: Semester 6 — Expected Graduation 2027
+    - generic [ref=f8e211]:
+      - generic [ref=f8e212]:
+        - paragraph [ref=f8e213]: Certified Skills
+        - heading "Certificates" [level=2] [ref=f8e214]
+      - generic [ref=f8e216]:
+        - generic [ref=f8e217]:
+          - generic [ref=f8e218]: 🏅
+          - generic [ref=f8e219]:
+            - paragraph [ref=f8e220]: Exploratory Data Analysis for Machine Learning
+            - paragraph [ref=f8e221]: IBM
+        - generic [ref=f8e222]:
+          - generic [ref=f8e223]: 🏅
+          - generic [ref=f8e224]:
+            - paragraph [ref=f8e225]: Introduction to HTML, CSS & JavaScript
+            - paragraph [ref=f8e226]: IBM
+        - generic [ref=f8e227]:
+          - generic [ref=f8e228]: 🏅
+          - generic [ref=f8e229]:
+            - paragraph [ref=f8e230]: Inheritance and Data Structures in Java
+            - paragraph [ref=f8e231]: University of Pennsylvania
+        - generic [ref=f8e232]:
+          - generic [ref=f8e233]: 🏅
+          - generic [ref=f8e234]:
+            - paragraph [ref=f8e235]: Introduction to Java
+            - paragraph [ref=f8e236]: LearnQuest
+    - generic [ref=f8e239]:
+      - generic [ref=f8e240]:
+        - paragraph [ref=f8e241]: Milestones
+        - heading "Achievements" [level=2] [ref=f8e242]
+      - generic [ref=f8e247]:
+        - generic [ref=f8e248]:
+          - generic [ref=f8e249]: 🏆
+          - paragraph [ref=f8e250]: Participated in 1 Hackathon — secured top 50
+        - generic [ref=f8e251]:
+          - generic [ref=f8e252]: 🌐
+          - paragraph [ref=f8e253]: Participated in latest open-source project discussions
+        - generic [ref=f8e254]:
+          - generic [ref=f8e255]: 🥈
+          - paragraph [ref=f8e256]: Silver medal, Maths Olympiad
+        - generic [ref=f8e257]:
+          - generic [ref=f8e258]: 🇮🇳
+          - paragraph [ref=f8e259]: Represented the college in Smart India Hackathon (SIH)
+    - generic [ref=f8e262]:
+      - generic [ref=f8e263]:
+        - paragraph [ref=f8e264]: Contact
+        - heading "Get in Touch" [level=2] [ref=f8e265]
+      - generic [ref=f8e267]:
+        - generic [ref=f8e268]:
+          - paragraph [ref=f8e269]: Have a project in mind or just want to chat? Feel free to reach out. I'm always open to discussing new opportunities.
+          - generic [ref=f8e270]:
+            - link "patelarpit4242@gmail.com" [ref=f8e272]:
+              - /url: mailto:patelarpit4242@gmail.com
+            - link "+91 9428106893" [ref=f8e279]:
+              - /url: tel:+919428106893
+            - link "Arpit R Patel" [ref=f8e285]:
+              - /url: https://linkedin.com/in/arpit-r-patel
+            - link "Ahmedabad, Gujarat, India" [ref=f8e293]:
+              - /url: "#"
+        - generic [ref=f8e302]:
+          - textbox "Your Name" [ref=f8e304]
+          - textbox "Your Email" [ref=f8e306]
+          - textbox "Your Message" [ref=f8e308]
+          - button "Send Message" [ref=f8e309]
+  - contentinfo [ref=f8e313]:
+    - generic [ref=f8e314]:
+      - paragraph [ref=f8e315]: © 2026 Arpit Patel. Built with React & Three.js
+      - generic [ref=f8e318]:
+        - link "Email" [ref=f8e319]:
+          - /url: mailto:patelarpit4242@gmail.com
+        - link "LinkedIn" [ref=f8e323]:
+          - /url: https://linkedin.com/in/arpit-r-patel
