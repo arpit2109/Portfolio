@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prototype 02 · Hero + paper-tear theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" crossorigin="anonymous" />
+<style>
+  /* dark is declared on [data-theme="dark"] too, so a torn-off sheet keeps its old colours after the root switches */
+  :root, [data-theme="dark"] {
+    --ink:#0b0b0f; --paper:#f3efe6; --accent:#ff6b3d;
+    --bg:var(--ink); --fg:var(--paper); --muted:rgba(243,239,230,.55); --line:rgba(243,239,230,.14);
+    --grid:rgba(243,239,230,.045);
+  }
+  [data-theme="light"] {
+    --bg:var(--paper); --fg:var(--ink); --muted:rgba(11,11,15,.55); --line:rgba(11,11,15,.14);
+    --grid:rgba(11,11,15,.06);
+  }
+  @property --r { syntax:'<length>'; inherits:false; initial-value:0px; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; }
+  body {
+    background:var(--bg); color:var(--fg); overflow:hidden;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  /* paper grain + faint grid (also used inside torn pieces, hence a class) */
+  .bg-grid, body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px; }
+  .bg-grain, body::after { content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.07; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  [data-theme="light"] body::after, [data-theme="light"] .bg-grain { opacity:.16; }
+  .sheet .bg-grid, .sheet .bg-grain, .sheet header { position:absolute; }
+  .sheet header { z-index:3; }
+
+  #page { position:relative; z-index:1; height:100%; display:grid; grid-template-columns: 1.05fr .95fr; }
+  header { position:fixed; inset:0 0 auto 0; display:flex; justify-content:space-between; align-items:center; gap:28px; padding:18px 28px; z-index:3; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+  header .logo { color:var(--fg); font-weight:600; letter-spacing:.2em; }
+  header nav { margin-left:auto; }
+  header nav a { color:var(--muted); text-decoration:none; margin-left:22px; }
+  header nav a:hover { color:var(--fg); }
+
+  .copy { align-self:center; padding: 72px 0 24px 8vw; max-width: 720px; }
+  .eyebrow { font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:.14em; color:var(--accent); margin-bottom:18px; min-height:1.3em; }
+  .eyebrow::before { content:"$ "; color:var(--muted); }
+  h1 { font-family:"Instrument Serif", serif; font-weight:400; font-size:clamp(44px, min(6.4vw, 13.5vh), 100px); line-height:.95; letter-spacing:-.01em; margin:0 0 22px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .lede { font-size:clamp(14px, 1.15vw, 17px); line-height:1.6; color:var(--muted); max-width:46ch; margin:0 0 28px; }
+  .cta { display:flex; gap:14px; align-items:center; }
+  .btn { font-size:13px; letter-spacing:.06em; padding:12px 18px; border-radius:999px; border:1px solid var(--line); color:var(--fg); text-decoration:none;
+    transition: transform .22s cubic-bezier(.2,.8,.2,1), border-color .22s cubic-bezier(.2,.8,.2,1), background-color .22s cubic-bezier(.2,.8,.2,1), color .22s cubic-bezier(.2,.8,.2,1); }
+  .btn.primary { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+  [data-theme="light"] .btn { border-color: rgba(11,11,15,.35); }
+  .btn:hover, .btn:focus-visible { transform:translateY(-2px); border-color:var(--fg); background:var(--fg); color:var(--bg); outline:none; }
+
+  .stage { position:relative; height:100%; }
+  /* the canvas spans the whole viewport so a waving arm is never clipped; the model is anchored to the right */
+  #avatar { position:fixed; inset:0; z-index:2; pointer-events:none; }
+  #avatar.above { z-index:12; }
+  .tag { position:absolute; right:28px; bottom:26px; font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:.1em; color:var(--muted); text-align:right; line-height:1.7; }
+  .tag b { color:var(--fg); font-weight:500; }
+
+  /* tear style picker (prototype only) */
+  .styles { position:fixed; left:28px; bottom:22px; z-index:3; font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:.1em; color:var(--muted); }
+  .styles button { background:none; border:0; color:var(--muted); font:inherit; cursor:pointer; padding:4px 8px; border-bottom:1px solid transparent; }
+  .styles button.on { color:var(--accent); border-color:var(--accent); }
+
+  .tear-btn { display:flex; align-items:center; gap:10px; cursor:pointer; border:0; background:none; color:var(--fg); font:inherit; font-size:12px; letter-spacing:.14em; text-transform:uppercase; padding:8px 0 8px 10px; }
+  .tear-btn .dash { width:34px; height:0; border-top:1.5px dashed var(--muted); }
+  .tear-btn .scissor { font-size:15px; transform:rotate(-90deg); display:inline-block; transition:transform .4s; }
+  .tear-btn:hover .scissor { transform:rotate(-90deg) translateX(3px); }
+
+  /* ---- shared: a "sheet" is a live copy of the page in its OLD theme ---- */
+  .sheet { position:absolute; background:var(--bg); color:var(--fg); overflow:hidden; }
+  .sheet > img.av { position:absolute; inset:0; width:100%; height:100%; z-index:2; }
+  .sheet > .page { position:relative; z-index:1; height:100%; display:grid; grid-template-columns: 1.05fr .95fr; }
+
+  /* ---- tear layer + pieces ---- */
+  .tear-layer { position:fixed; inset:0; z-index:9; pointer-events:none; perspective:1400px; transform-style:preserve-3d; overflow:hidden; }
+  .piece { position:absolute; will-change:transform, opacity; filter: drop-shadow(0 0 .6px rgba(255,255,255,.55)) drop-shadow(0 12px 16px rgba(0,0,0,.4)); }
+  /* shards with a real back face must live in an unflattened 3D context: no filter on them */
+  .piece.has-backs { filter:none; transform-style:preserve-3d; }
+  .piece > .rot { position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+  .piece > .rot > .sheet { backface-visibility:hidden; transform:translateZ(0.01px); }
+  /* the back of a shard: adhesive / paper reverse */
+  .pback { position:absolute; inset:0; transform:rotateY(180deg); backface-visibility:hidden; background:#ebe6dc;
+    background-image: linear-gradient(135deg, rgba(255,255,255,.55), rgba(0,0,0,.06) 60%, rgba(0,0,0,.12)); }
+  .pedge { position:absolute; inset:0; background:rgba(0,0,0,.55); transform:translate3d(2px,3px,-1px); }
+  .shock { position:fixed; width:720px; height:720px; border-radius:50%; border:3px solid; z-index:12; pointer-events:none; will-change:transform, opacity; }
+  .cracks { position:fixed; inset:0; z-index:10; pointer-events:none; }
+  .cracks line { stroke-linecap:round; }
+  .dust { position:fixed; width:3px; height:3px; border-radius:1px; z-index:11; pointer-events:none; will-change:transform, opacity; }
+  .ripline { position:fixed; inset:0; z-index:10; pointer-events:none; overflow:visible; }
+  @media (max-width: 900px) { #page { grid-template-columns:1fr; grid-template-rows: 1fr 1fr; } .copy { padding: 18vh 6vw 0; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- user-space filter so the mask hole and the glowing rim share one noise field -->
+    <filter id="poison" filterUnits="userSpaceOnUse" x="-400" y="-400" width="4000" height="3000" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018 0.024" numOctaves="5" seed="11" result="noise"/>
+      <feOffset id="poisonDrift" in="noise" dx="0" dy="0" result="noise2"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise2" scale="70" xChannelSelector="R" yChannelSelector="G" result="d1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="7" result="crumble"/>
+      <feDisplacementMap in="d1" in2="crumble" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <mask id="poisonMask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="4000" height="3000">
+      <rect x="0" y="0" width="4000" height="3000" fill="white"/>
+      <circle id="poisonHole" cx="0" cy="0" r="0" fill="black" filter="url(#poison)"/>
+      <g id="poisonMaskExtra"></g>
+    </mask>
+  </defs>
+</svg>
+<header>
+  <div class="logo">AP · PORTFOLIO</div>
+  <nav><a href="#">work</a><a href="#">playground</a><a href="#">about</a><a href="#">contact</a></nav>
+  <button id="tear" class="tear-btn" aria-label="Switch theme" title="switch theme (T)"><span class="dash"></span><span class="scissor">☣</span><span id="tearLabel">corrode to light</span></button>
+</header>
+
+<div id="page">
+  <section class="copy">
+    <div class="eyebrow">python developer intern · student</div>
+    <h1>I build things<br/>that <em>think</em>,<br/>then make them move.</h1>
+    <p class="lede">Python under the hood, 3D on the surface. Currently interning as a Python developer and studying for my degree, this site is the place where the scripts come out to play.</p>
+    <div class="cta"><a class="btn primary" href="#">see the work</a><a class="btn" href="#">run my code live</a></div>
+  </section>
+  <section class="stage">
+    <div class="tag"><b id="mood">idle</b><br/>move · click to wave</div>
+  </section>
+</div>
+<div id="avatar"></div>
+
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/",
+  "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3/lib/three-vrm.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import { createAvatar } from './avatar/avatar.js';
+
+const root = document.documentElement;
+const moodEl = document.getElementById('mood');
+const av = createAvatar(document.getElementById('avatar'), {
+  modelUrl: './avatar/assets/AvatarSample_C.vrm', theme: root.dataset.theme, anchorX: 0.76,
+  onFrame: (a) => { moodEl.textContent = a.mood.label; },
+});
+window.__avatar = av;
+
+// =====================================================================
+//  THEME SWITCH EFFECTS — all built from live DOM copies of the page
+// =====================================================================
+
+const params = new URLSearchParams(location.search);
+if (!params.has('debug')) document.querySelector('.tag').style.display = 'none';
+const rnd = (a, b) => a + Math.random() * (b - a);
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+const raf = () => new Promise(r => requestAnimationFrame(r));
+const paperColor = (theme) => (theme === 'dark' ? '#f3efe6' : '#0b0b0f');
+
+// --- "sheet" template: a live DOM copy of the page in the OLD theme + one frame of the avatar ---
+function makeSheetTemplate(w, h, theme) {
+  const sheet = document.createElement('div'); sheet.className = 'sheet'; sheet.dataset.theme = theme;
+  Object.assign(sheet.style, { width: w + 'px', height: h + 'px' });
+  const grid = document.createElement('div'); grid.className = 'bg-grid';
+  const grain = document.createElement('div'); grain.className = 'bg-grain';
+  const hdr = document.querySelector('header').cloneNode(true);
+  const page = document.getElementById('page').cloneNode(true); page.removeAttribute('id'); page.className = 'page';
+  const pic = document.createElement('img'); pic.className = 'av'; pic.src = av.captureImage();
+  [sheet, hdr, page].forEach(n => n.querySelectorAll('[id]').forEach(e => e.removeAttribute('id')));
+  hdr.removeAttribute('id');
+  sheet.append(grid, grain, page, pic, hdr);
+  return sheet;
+}
+
+// --- paper dust: tiny specks thrown from a point ---
+function dust(x, y, n, color, opts = {}) {
+  const { spread = 1, up = 1, delay = 0, life = [700, 1300] } = opts;
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement('div'); d.className = 'dust';
+    const s = rnd(1.5, 4); Object.assign(d.style, { left: x + 'px', top: y + 'px', width: s + 'px', height: s * rnd(.6, 1.4) + 'px', background: color, opacity: 0 });
+    document.body.appendChild(d);
+    const ang = rnd(0, Math.PI * 2), v = rnd(40, 220) * spread;
+    const dx = Math.cos(ang) * v, dy = Math.sin(ang) * v * .6 - rnd(30, 120) * up;
+    const dur = rnd(life[0], life[1]);
+    d.animate([
+      { transform: 'translate(0,0) rotate(0deg)', opacity: 1, offset: 0 },
+      { transform: `translate(${dx * .6}px, ${dy * .6}px) rotate(${rnd(-180, 180)}deg)`, opacity: 1, offset: .4 },
+      { transform: `translate(${dx}px, ${dy + 260}px) rotate(${rnd(-360, 360)}deg)`, opacity: 0, offset: 1 },
+    ], { duration: dur, delay: delay + rnd(0, 120), easing: 'cubic-bezier(.3,.4,.7,1)', fill: 'forwards' });
+    setTimeout(() => d.remove(), delay + dur + 200);
+  }
+}
+
+// =============================== THEME SWITCH: CORROSION ===============================
+// Cold, matte, non-emissive. The surface discolours, then perforates: a stain appears, a pit opens in it, pits
+// merge into a crumbling front. No glow, no embers. Ash is matte. 1.5 s total, front stops at the far corner.
+const SPRITES = (() => {
+  const make = (size, draw) => { const c = document.createElement('canvas'); c.width = c.height = size; draw(c.getContext('2d'), size / 2); return c; };
+  const S = 128, R = 60;
+  const blot = (rgb) => make(S, (x, m) => {  // matte discolouration blot
+    const g = x.createRadialGradient(m, m, 0, m, m, R);
+    g.addColorStop(0, `rgba(${rgb},.85)`); g.addColorStop(.6, `rgba(${rgb},.45)`); g.addColorStop(1, `rgba(${rgb},0)`);
+    x.fillStyle = g; x.beginPath(); x.arc(m, m, R, 0, 6.283); x.fill();
+  });
+  const stainPaper = blot('70,40,25'), stainInk = blot('70,95,85');
+  const bubble = make(S, (x, m) => {       // rare wet sizzle, no glow
+    const g = x.createRadialGradient(m - R * .25, m - R * .3, R * .1, m, m, R);
+    g.addColorStop(0, 'rgba(200,190,170,.25)'); g.addColorStop(.75, 'rgba(120,90,60,.35)'); g.addColorStop(1, 'rgba(60,35,20,.8)');
+    x.fillStyle = g; x.beginPath(); x.arc(m, m, R, 0, 6.283); x.fill();
+    x.fillStyle = 'rgba(255,255,255,.55)'; x.beginPath(); x.ellipse(m - R * .38, m - R * .42, R * .22, R * .13, -.7, 0, 6.283); x.fill();
+  });
+  return { stainPaper, stainInk, bubble, S, R };
+})();
+
+function runSpread(origin, w, h, template, from, to) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const { stainPaper, stainInk, bubble: SPR_B, S: SS, R: SR } = SPRITES;
+  const SPR_S = from === 'light' ? stainPaper : stainInk;
+  const sheet = template; sheet.classList.add('spread-sheet');
+  const hole = document.getElementById('poisonHole');
+  const drift = document.getElementById('poisonDrift');
+  const maskG = document.getElementById('poisonMaskExtra'); maskG.innerHTML = '';
+  hole.setAttribute('cx', origin.x); hole.setAttribute('cy', origin.y); hole.setAttribute('r', 0);
+
+  // scorch halo lives inside the old sheet: umber multiply on paper, desaturated verdigris on ink (never screen)
+  const scorch = document.createElement('div'); scorch.className = 'scorch ' + (from === 'light' ? 'on-paper' : 'on-ink');
+  scorch.style.setProperty('--ox', origin.x + 'px'); scorch.style.setProperty('--oy', origin.y + 'px');
+  sheet.appendChild(scorch);
+
+  // edge rim: thin, dark, matte
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'spread-svg');
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('width', w); svg.setAttribute('height', h);
+  const gf = document.createElementNS(NS, 'g'); gf.setAttribute('filter', 'url(#poison)'); svg.appendChild(gf);
+  const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+  const rim = mk('circle', { cx: origin.x, cy: origin.y, r: 0, fill: 'none', stroke: 'rgba(122,38,8,.55)', 'stroke-width': 1.5 }, gf);
+  const PITS = 56;
+  const pits = Array.from({ length: PITS }, () => ({ live: false, mask: mk('circle', { r: 0, fill: 'black', filter: 'url(#poison)' }, maskG), rim: mk('circle', { r: 0, fill: 'none', stroke: 'rgba(122,38,8,.5)', 'stroke-width': 1.2 }, gf) }));
+
+  const canvas = document.createElement('canvas'); canvas.className = 'spread-canvas';
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = w * dpr; canvas.height = h * dpr; canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  document.body.append(sheet, svg, canvas);
+  const sprite = (img, x, y, radius, alpha = 1) => { const d = radius * (SS / SR); if (alpha !== 1) ctx.globalAlpha = alpha; ctx.drawImage(img, x - d / 2, y - d / 2, d, d); if (alpha !== 1) ctx.globalAlpha = 1; };
+
+  const Rmax = Math.max(...[[0, 0], [w, 0], [0, h], [w, h]].map(([x, y]) => Math.hypot(x - origin.x, y - origin.y)));   // stop at the far corner
+  const D = 1500, TAIL = 250;
+  const front = (t) => 40 + (Rmax - 40) * Math.pow(t, 2.2);            // ~150 px by 400 ms, no pause
+  const STAIN_MS = 250;
+
+  const flakes = [], sizzles = [];
+  const inView = (x, y, m = 40) => x > -m && x < w + m && y > -m && y < h + m;
+  const flakeColor = from === 'light' ? 'rgba(40,24,16,.95)' : 'rgba(205,198,185,.9)';
+
+  av.react({ surprise: .3, sad: .5, ms: D });
+  // the live avatar stays above the corroding sheet (not printed on it); his lighting flips when the front reaches his head
+  const avEl = document.getElementById('avatar'); avEl.classList.add('above');
+  sheet.querySelector('img.av')?.remove();
+  const hs0 = av.headScreen(); const headDist = Math.hypot((hs0.x + 1) / 2 * w - origin.x, (1 - hs0.y) / 2 * h - origin.y);
+  let avFlipped = false;
+  const t0 = performance.now(); let last = t0, rafId = 0;
+  const tick = () => {
+    const now = performance.now(), dt = Math.min(50, now - last) / 1000; last = now;
+    const tt = (now - t0) / D, t = Math.min(1, tt);
+    const r = front(t);
+    const vis = t > .94 ? (1 - t) / .06 : 1;
+    drift.setAttribute('dx', Math.sin(now / 600) * 30); drift.setAttribute('dy', Math.cos(now / 450) * 24);
+    hole.setAttribute('r', Math.max(0, r - 12));
+    rim.setAttribute('r', Math.max(0, r - 12)); rim.setAttribute('opacity', vis);
+    if (!avFlipped && r >= headDist) { avFlipped = true; av.setTheme(to); av.react({ surprise: .6, flinch: .6, ms: 500 }); }
+    scorch.style.setProperty('--r', (r - 8) + 'px');
+
+    // pits: 120-320 px ahead from t > .04; a stain first, then the hole opens
+    if (t > .04 && t < .97) {
+      const circ = 2 * Math.PI * Math.max(r, 60);
+      for (let i = 0, n = Math.min(5, 1 + circ / 700); i < n; i++) {
+        const p = pits.find(q => !q.live); if (!p) break;
+        const ang = rnd(0, Math.PI * 2), ahead = rnd(120, 320);
+        const x = origin.x + Math.cos(ang) * (r + ahead), y = origin.y + Math.sin(ang) * (r + ahead);
+        if (!inView(x, y)) continue;
+        Object.assign(p, { live: true, x, y, born: now, grow: rnd(300, 600), size: rnd(8, 30), flaked: false });
+      }
+    }
+    for (const p of pits) {
+      if (!p.live) continue;
+      const age = now - p.born;
+      if (Math.hypot(p.x - origin.x, p.y - origin.y) < r - 12) {       // swallowed by the front
+        p.live = false; p.mask.setAttribute('r', 0); p.rim.setAttribute('r', 0); continue;
+      }
+      if (age < STAIN_MS) { sprite(SPR_S, p.x, p.y, 15 * (age / STAIN_MS) + 4, .9); continue; }
+      const gs = 1 - Math.pow(1 - clamp01((age - STAIN_MS) / p.grow), 2);
+      const pr = p.size * gs;
+      sprite(SPR_S, p.x, p.y, pr + 14, .8);                               // stain stays around the hole
+      p.mask.setAttribute('cx', p.x); p.mask.setAttribute('cy', p.y); p.mask.setAttribute('r', pr);
+      p.rim.setAttribute('cx', p.x); p.rim.setAttribute('cy', p.y); p.rim.setAttribute('r', pr); p.rim.setAttribute('opacity', vis);
+      if (!p.flaked && gs > .2) { p.flaked = true; for (let k = 0; k < 2; k++) flakes.push({ x: p.x, y: p.y, vx: rnd(-25, 25), vy: rnd(-10, 25), rot: rnd(0, 6.28), vr: rnd(-4, 4), s: rnd(2, 5), born: now, life: rnd(500, 900) }); }
+    }
+    // matte flakes off the main edge, a rare wet sizzle
+    if (t > .05 && t < .92) {
+      for (let i = 0; i < 2; i++) {
+        const ang = rnd(0, Math.PI * 2), x = origin.x + Math.cos(ang) * (r - 6), y = origin.y + Math.sin(ang) * (r - 6);
+        if (inView(x, y)) flakes.push({ x, y, vx: Math.cos(ang) * rnd(10, 50), vy: rnd(-20, 20), rot: rnd(0, 6.28), vr: rnd(-5, 5), s: rnd(2, 6), born: now, life: rnd(500, 1000) });
+      }
+      if (Math.random() < .1) {
+        const ang = rnd(0, Math.PI * 2), x = origin.x + Math.cos(ang) * (r - 4), y = origin.y + Math.sin(ang) * (r - 4);
+        if (inView(x, y)) sizzles.push({ x, y, s: rnd(3, 7), born: now, life: rnd(300, 550) });
+      }
+    }
+    // --- draw particles ---
+    for (let i = flakes.length - 1; i >= 0; i--) {
+      const f = flakes[i], k = (now - f.born) / f.life; if (k >= 1) { flakes.splice(i, 1); continue; }
+      f.vy += 260 * dt; f.vx *= (1 - 1.5 * dt); f.x += f.vx * dt; f.y += f.vy * dt; f.rot += f.vr * dt;
+      ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.globalAlpha = 1 - k * k;
+      ctx.fillStyle = flakeColor; ctx.fillRect(-f.s / 2, -f.s / 3, f.s, f.s * .66); ctx.restore();
+    }
+    for (let i = sizzles.length - 1; i >= 0; i--) {
+      const b = sizzles[i], k = (now - b.born) / b.life; if (k >= 1) { sizzles.splice(i, 1); continue; }
+      sprite(SPR_B, b.x, b.y - k * 5, b.s * (k < .8 ? (0.3 + k) : (1.1 - (k - .8) * 5)), 1);
+    }
+    if (t < 1) {
+      const hs = av.headScreen(); const hx = (hs.x + 1) / 2 * w, hy = (1 - hs.y) / 2 * h;
+      const vx = hx - origin.x, vy = hy - origin.y, vd = Math.hypot(vx, vy) || 1;
+      const fx = origin.x + vx / vd * Math.min(r, vd), fy = origin.y + vy / vd * Math.min(r, vd);
+      av.glanceAt((fx / w) * 2 - 1, -(fy / h) * 2 + 1, 200);
+    }
+  };
+  rafId = requestAnimationFrame(function loop() {
+    ctx.clearRect(0, 0, w, h); tick();
+    if (performance.now() - t0 < D + TAIL) rafId = requestAnimationFrame(loop); else ctx.clearRect(0, 0, w, h);
+  });
+  setTimeout(() => { sheet.style.opacity = '0'; }, D);
+  return { cleanup: () => { cancelAnimationFrame(rafId); sheet.remove(); svg.remove(); canvas.remove(); maskG.innerHTML = ''; avEl.classList.remove('above'); if (!avFlipped) av.setTheme(to); }, total: D + TAIL, switchAt: 0, handlesAvatar: true };
+}
+
+// --- source-diff label: the eyebrow prints the theme change as a diff ---
+const eyebrow = document.querySelector('.eyebrow');
+const EYEBROW_TEXT = eyebrow.textContent;
+function diffLabel(from, to) {
+  const name = (t) => (t === 'dark' ? 'ink' : 'paper');
+  const swap = (html) => {
+    eyebrow.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' }).onfinish = () => {
+      if (html) eyebrow.innerHTML = html; else eyebrow.textContent = EYEBROW_TEXT;
+      eyebrow.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, fill: 'forwards' });
+    };
+  };
+  swap(`<span style="color:var(--muted)">- theme: ${name(from)}</span>&nbsp;&nbsp;<span style="color:var(--accent)">+ theme: ${name(to)}</span>`);
+  setTimeout(() => swap(null), 1600);
+}
+
+// --- orchestration ---
+
+let tearing = false;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+async function tear(ev) {
+  if (tearing) return; tearing = true;
+  const w = innerWidth, h = innerHeight;
+  const btn = document.getElementById('tear').getBoundingClientRect();
+  const origin = ev && ev.clientX != null ? { x: ev.clientX, y: ev.clientY } : { x: btn.left + btn.width / 2, y: btn.top + btn.height / 2 };
+  const from = root.dataset.theme, to = from === 'dark' ? 'light' : 'dark';
+  let runnerHandlesAvatar = false;
+  const switchTheme = () => {
+    root.dataset.theme = to; if (!runnerHandlesAvatar) av.setTheme(to);
+    document.getElementById('tearLabel').textContent = to === 'dark' ? 'corrode to light' : 'corrode to dark';
+    diffLabel(from, to);
+  };
+  const lowEnd = matchMedia('(pointer: coarse)').matches || innerWidth < 900 || (navigator.hardwareConcurrency || 8) <= 4;
+  if (reduceMotion.matches || lowEnd) {       // accessibility / device fallback: plain 300 ms crossfade
+    root.style.transition = 'background .3s'; document.body.style.transition = 'background .3s, color .3s';
+    switchTheme(); setTimeout(() => { tearing = false; }, 320); return;
+  }
+  const template = makeSheetTemplate(w, h, from);
+  const { cleanup, total, switchAt, handlesAvatar } = runSpread(origin, w, h, template, from, to);
+  runnerHandlesAvatar = !!handlesAvatar;
+  await raf();
+  setTimeout(switchTheme, switchAt);   // the copy covers the page until then
+  window.__tearCleanup = setTimeout(() => { cleanup(); tearing = false; }, total + 80);
+}
+
+document.getElementById('tear').addEventListener('click', tear);
+addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 't') tear(e); });
+window.__tear = () => tear();
+</script>
+</body>
+</html>
