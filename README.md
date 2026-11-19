@@ -16,3 +16,9 @@ status HUD.
 three.js · three-vrm · vanilla JS/CSS (Vite + React migration planned)
 
 © Arpit Patel
+
+## Story
+`media/one-sheet-story.mp4` — a 41 s motion storyboard of the full page concept:
+one sheet of paper travels through each of my projects (scan, classify, reconcile,
+detect, solve, post, run) and is finally sealed into an envelope. Designed frame by
+frame in Figma as the blueprint for the scroll experience.
